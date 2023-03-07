@@ -18,12 +18,12 @@ IMAGE    ?= ghcr.io/coturn/coturn
 
 IMAGE_VER        ?= 4.6.1-alpine
 
-EXTERNAL_IP        ?= $(shell docker run --rm $(IMAGE):$(IMAGE_VER) detect-external-ip)
+#EXTERNAL_IP        ?= $(shell docker run --rm $(IMAGE):$(IMAGE_VER) detect-external-ip)
 STATIC_AUTH_SECRET ?= $(shell < /dev/urandom tr -dc A-Za-z0-9 | head -c14; echo)
 CLI_SECRET         ?= $(shell < /dev/urandom tr -dc A-Za-z0-9 | head -c14; echo)
 
-#MIN_PORT=
-#MAX_PORT=
+MIN_PORT            = 49152
+MAX_PORT            = 49200
 
 # ------------------------------------------------------------------------------
 # .env template (custom part)
@@ -34,9 +34,12 @@ define CONFIG_CUSTOM
 # db:$(USE_DB) user:$(ADD_USER)
 
 
-EXTERNAL_IP=$(EXTERNAL_IP)
+#EXTERNAL_IP=$(EXTERNAL_IP)
 STATIC_AUTH_SECRET=$(STATIC_AUTH_SECRET)
 CLI_SECRET=$(CLI_SECRET)
+
+MIN_PORT=$(MIN_PORT)
+MAX_PORT=$(MAX_PORT)
 
 # Path to /opt/dcape/var. Used only outside drone
 DCAPE_ROOT=$(DCAPE_ROOT)
