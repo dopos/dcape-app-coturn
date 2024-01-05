@@ -11,6 +11,10 @@
 [coturn](https://github.com/coturn/coturn) application package for [dcape](https://github.com/dopos/dcape).
 Based on [coturn-docker](https://github.com/m1rkwood/coturn-docker) repo.
 
+## Notes
+
+* Traefik [has no DTLS support](https://github.com/traefik/traefik/issues/6642)
+
 ## Docker image used
 
 * [ghcr.io/coturn/coturn](https://github.com/coturn/coturn/pkgs/container/coturn)
