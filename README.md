@@ -13,7 +13,7 @@ Based on [coturn-docker](https://github.com/m1rkwood/coturn-docker) repo.
 
 ## Notes
 
-* Traefik [has no DTLS support](https://github.com/traefik/traefik/issues/6642)
+* Traefik [has no DTLS support](https://github.com/traefik/traefik/issues/6642), we are not using Traefik to proxy anything for it
 
 ## Docker image used
 

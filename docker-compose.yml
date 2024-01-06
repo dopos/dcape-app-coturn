@@ -1,50 +1,61 @@
 # custom app config
-# overrides DCAPE/apps/drone/dcape-app/docker-compose.yml
 
 version: '2'
 
 services:
   app:
+    image: ${IMAGE}:${IMAGE_VER}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/ssl/certs:/etc/ssl/certs:ro
+      - /opt/src/dopos/cert-exp/ssl:/ssl:ro # traefik acme.json exported
     restart: unless-stopped
     ports:
-#      - 3478:3478
-#      - 3478:3478/udp
-#      - 5349:5349
-#      - 5349:5349/udp
+## STUN/TURN
+      - "3478:3478"
+      - "3478:3478/udp"
+      - "3479:3479"
+      - "3479:3479/udp"
+## STUN/TURN SSL
+      - "5349:5349"
+      - "5349:5349/udp"
+      - "5350:5350"
+      - "5350:5350/udp"
+      - 7999:7999           # webadmin
+      - 127.0.0.1:5766:5766 # cli
+# Relay Ports
       - '${MIN_PORT}-${MAX_PORT}:${MIN_PORT}-${MAX_PORT}/udp'
-      - 127.0.0.1:5766:5766
     command:
       - -v
+      - --realm=${APP_SITE}
+      - --cert=/ssl/${APP_SITE}.crt
+      - --pkey=/ssl/${APP_SITE}.key
       - --log-file=stdout
       - --external-ip=$(detect-external-ip)
-      - --realm=${APP_SITE}
-      - --tcp-proxy-port=5555
       - --fingerprint
       - --listening-ip=0.0.0.0
-#      - '--external-ip=${EXTERNAL_IP}'
-#      - '--relay-ip=${EXTERNAL_IP}'
       - --min-port=${MIN_PORT}
       - --max-port=${MAX_PORT}
-      - --log-file=stdout
-      - --cli-ip=0.0.0.0
       - --use-auth-secret
       - --static-auth-secret=${STATIC_AUTH_SECRET}
-      - --cli-ip=0.0.0.0
       - --cli-password=${CLI_SECRET}
+      - --cli-ip=0.0.0.0
       - --web-admin
-      - --web-admin-listen-on-workers
-      - --no-tls
-      - --no-dtls
+      - --web-admin-ip=0.0.0.0
+      - --web-admin-port=7999
+      - --user-quota=12
+      - --total-quota=1200
+      - --no-tlsv1
+      - --no-tlsv1_1
+      - --no-tcp-relay
       - --pidfile=/var/tmp/turnserver.pid
-      - -n
-      - --psql-userdb="host=db dbname=${PGDATABASE} user=${PGUSER} password=${PGPASSWORD} sslmode=disable"
-#    tmpfs:
-#      - /run:mode=770,size=1k,uid=200,gid=10000
-#    network_mode: host
-    labels:
-      - "traefik.http.services.app-${APP_TAG}.loadbalancer.server.port=5555"
-      - "traefik.http.services.app-${APP_TAG}.loadbalancer.proxyprotocol=2"
-
+      - --psql-userdb="postgres://${PGUSER}:${PGPASSWORD}@db/${PGDATABASE}?sslmode=disable"
     environment:
       - DETECT_EXTERNAL_IP=yes
       - DETECT_RELAY_IP=yes
+
+networks:
+  default:
+    name: ${DCAPE_NET}
+    external: true

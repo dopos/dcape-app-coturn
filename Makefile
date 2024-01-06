@@ -7,7 +7,7 @@ CFG                ?= .env
 CFG_BAK            ?= $(CFG).bak
 
 #- App name
-APP_NAME           ?= coturn
+APP_NAME           ?= turn
 
 #- Docker image name
 IMAGE              ?= ghcr.io/coturn/coturn
@@ -19,7 +19,7 @@ IMAGE_VER          ?= 4.6.2-alpine
 APP_DOMAIN         ?= dev.test
 
 # Hostname for external access
-APP_SITE           ?= coturn.$(APP_DOMAIN)
+APP_SITE           ?= $(APP_DOMAIN)
 
 #EXTERNAL_IP        ?= $(shell docker run --rm $(IMAGE):$(IMAGE_VER) detect-external-ip)
 
@@ -36,6 +36,7 @@ MAX_PORT            = 49200
 
 USE_DB              = yes
 DB_INIT_SQL         = schema.sql
+USE_DCAPE_DC        = no
 # ------------------------------------------------------------------------------
 
 # if exists - load old values
@@ -64,5 +65,17 @@ endif
 ext-ip: CMD=exec app detect-external-ip
 ext-ip: dc
 
-cli: CMD=exec app bash
-cli: dc
+## Open CLI via telnet
+cli:
+	@echo "Use pass: $(CLI_SECRET)"
+	@telnet 127.0.0.1 5766
+
+PG_DSN := postgres://$(PGUSER):$(PGPASSWORD)@db/$(PGDATABASE)?sslmode=disable
+
+## Add admin user
+admin-add: CMD=exec app turnadmin -A -u admin -p "$(CLI_SECRET)" --psql-userdb="$(PG_DSN)"
+admin-add: dc
+
+## List admin users
+admin-ls: CMD=exec app turnadmin -L --psql-userdb="$(PG_DSN)"
+admin-ls: dc
