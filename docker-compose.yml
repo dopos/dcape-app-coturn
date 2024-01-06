@@ -9,7 +9,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/ssl/certs:/etc/ssl/certs:ro
-      - /opt/src/dopos/cert-exp/ssl:/ssl:ro # traefik acme.json exported
+      - ./ssl:/ssl:ro # traefik acme.json exported
     restart: unless-stopped
     ports:
 ## STUN/TURN
