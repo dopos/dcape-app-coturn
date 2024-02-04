@@ -23,7 +23,7 @@ Based on [coturn-docker](https://github.com/m1rkwood/coturn-docker) repo.
 
 * linux 64bit (git, make, sed)
 * [docker](http://docker.io)
-* [dcape](https://github.com/dopos/dcape) v2
+* [dcape](https://github.com/dopos/dcape) v3
 * Git service ([github](https://github.com), [gitea](https://gitea.io) or [gogs](https://gogs.io))
 
 ## Install
