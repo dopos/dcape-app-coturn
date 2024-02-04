@@ -24,10 +24,10 @@ APP_SITE           ?= $(APP_DOMAIN)
 #EXTERNAL_IP        ?= $(shell docker run --rm $(IMAGE):$(IMAGE_VER) detect-external-ip)
 
 #- STATIC_AUTH_SECRET
-STATIC_AUTH_SECRET ?= $(shell < /dev/urandom tr -dc A-Za-z0-9 | head -c14; echo)
+STATIC_AUTH_SECRET ?= $(shell openssl rand -hex 16; echo)
 
 #- CLI_SECRET
-CLI_SECRET         ?= $(shell < /dev/urandom tr -dc A-Za-z0-9 | head -c14; echo)
+CLI_SECRET         ?= $(shell openssl rand -hex 16; echo)
 
 #- UDP min port
 MIN_PORT            = 49152
