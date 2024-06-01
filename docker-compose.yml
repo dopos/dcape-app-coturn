@@ -1,7 +1,5 @@
 # custom app config
 
-version: '2'
-
 services:
   app:
     image: ${IMAGE}:${IMAGE_VER}
